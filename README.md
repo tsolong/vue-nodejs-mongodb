@@ -4,17 +4,17 @@
 ## 1. 软件下载与安装
 
 ### 1.1 Node.js
-* 官网：https://nodejs.org
-* 下载：https://nodejs.org/dist/v10.16.3/node-v10.16.3-x64.msi
+* 官方网站：https://nodejs.org
+* 下载地址：https://nodejs.org/dist/v10.16.3/node-v10.16.3-x64.msi
 * 安装步骤：下一步，下一步，完成。
 
 ### 1.2 MongoDB Server (Database software 数据库软件)
-* 官网：https://www.mongodb.com/what-is-mongodb
+* 官方网站：https://www.mongodb.com/what-is-mongodb
 * 下载地址：https://downloads.mongodb.com/win32/mongodb-win32-x86_64-enterprise-windows-64-4.2.0-signed.msi
 * 安装步骤：下一步，下一步，完成。
 
 ### 1.3 MongoDB Compass (GUI for MongoDB 图形化数据库管理软件)
-* 官网： https://www.mongodb.com/products/compass
+* 官方网站： https://www.mongodb.com/products/compass
 * 下载地址：https://downloads.mongodb.com/compass/mongodb-compass-1.19.12-win32-x64.exe
 * 安装步骤：下一步，下一步，完成。
 
