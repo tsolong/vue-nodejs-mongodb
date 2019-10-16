@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>vue-nodejs-mongodb</title>
+
+  <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+  <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+  <script src="assets/js/layer_mobile/layer.js"></script>
+
+  <style>
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      margin: 50px auto;
+    }
+  </style>
+
+</head>
+<body>
+
+<div id="app">
+
+  <h1>vue-nodejs-mongodb</h1>
+
+  <div class="newUserForm">
+    <p><input type="text" placeholder="姓名" v-model="newUser.name"></p>
+    <p><input type="text" placeholder="年龄" v-model="newUser.age"></p>
+    <p>
+      <button type="button" @click="addUserHandler">新增</button>
+    </p>
+  </div>
+
+  <table border="1">
+    <tr>
+      <th>序号</th>
+      <th>ID</th>
+      <th>姓名</th>
+      <th>年龄</th>
+      <th>操作</th>
+    </tr>
+    <tr v-for="(userInfo, index) in userLists">
+      <td width="100">{{index + 1}}</td>
+      <td width="100">{{userInfo._id}}</td>
+      <td>{{userInfo.name}}</td>
+      <td>{{userInfo.age}}</td>
+      <td width="200">
+        <button type="button" @click="editUserHandler(userInfo)">编辑</button>
+        <button type="button" @click="deleteUserHandler(userInfo)">删除</button>
+      </td>
+    </tr>
+  </table>
+
+  <div class="editUserForm" v-if="isShowEditUserForm">
+    <p><input type="text" placeholder="ID" v-model="editUser._id" disabled></p>
+    <p><input type="text" placeholder="姓名" v-model="editUser.name"></p>
+    <p><input type="text" placeholder="年龄" v-model="editUser.age"></p>
+    <p>
+      <button type="button" @click="saveUserHandler">保存</button>
+      <button type="button" @click="cancelEditUserHandler">取消</button>
+    </p>
+  </div>
+
+</div>
+
+<script>
+
+  new Vue({
+    el: '#app',
+    data: {
+      userLists: [], // 用户列表数据
+      newUser: { // 新增用户
+        name: '', // 姓名
+        age: '' // 年龄
+      },
+      editUser: { // 编辑用户
+        _id: '', // ID
+        name: '', // 姓名
+        age: '' // 年龄
+      },
+      isShowEditUserForm: false // 是否展示编辑用户表单
+    },
+    created() {
+      // 用户列表
+      this.getUserListHandler();
+    },
+    mounted() {
+    },
+    computed: {},
+    methods: {
+
+      // 用户列表
+      getUserListHandler() {
+        axios.post('http://127.0.0.1:8002/userLists', this.queryString({}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+          .then(response => {
+            if (response && response.data) {
+              if (response.data.rtn_code == '0') {
+                this.userLists = response.data.data;
+              } else {
+                this.toast(response.data.rtn_tip);
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+
+      // 清空新增用户表单数据
+      clearNewUserFormData() {
+        this.newUser = {
+          name: '', // 姓名
+          age: '' // 年龄
+        };
+      },
+
+      // 新增用户
+      addUserHandler() {
+        axios.post('http://127.0.0.1:8002/addUser', this.queryString(this.newUser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+          .then(response => {
+            if (response && response.data) {
+              if (response.data.rtn_code == '0') {
+                this.toast('新增成功');
+                // 清空新增用户表单数据
+                this.clearNewUserFormData();
+                // 重新获取数据
+                this.getUserListHandler();
+              } else {
+                this.toast(response.data.rtn_tip);
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+
+      // 编辑用户
+      editUserHandler(userInfo) {
+        this.editUser = {
+          _id: userInfo._id, // ID
+          name: userInfo.name, // 姓名
+          age: userInfo.age // 年龄
+        };
+        this.isShowEditUserForm = true;
+      },
+
+      // 保存用户
+      saveUserHandler() {
+        axios.post('http://127.0.0.1:8002/editUser', this.queryString(this.editUser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+          .then(response => {
+            if (response && response.data) {
+              if (response.data.rtn_code == '0') {
+                this.toast('编辑成功');
+                // 清空新增用户表单数据
+                this.clearEditUserFormData();
+                this.isShowEditUserForm = false;
+                // 重新获取数据
+                this.getUserListHandler();
+              } else {
+                this.toast(response.data.rtn_tip);
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+
+      // 取消编辑用户
+      cancelEditUserHandler() {
+        // 清空编辑用户表单数据
+        this.clearEditUserFormData();
+        this.isShowEditUserForm = false;
+      },
+
+      // 清空编辑用户表单数据
+      clearEditUserFormData() {
+        this.editUser = {
+          _id: '', // ID
+          name: '', // 姓名
+          age: '' // 年龄
+        };
+      },
+
+      // 删除用户
+      deleteUserHandler(userInfo) {
+        if (userInfo && userInfo._id) {
+          axios.post('http://127.0.0.1:8002/deleteUser', this.queryString({_id: userInfo._id}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .then(response => {
+              if (response && response.data) {
+                if (response.data.rtn_code == '0') {
+                  this.toast('删除成功');
+                  // 重新获取数据
+                  this.getUserListHandler();
+                } else {
+                  this.toast(response.data.rtn_tip);
+                }
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
+      },
+
+      // toast提示
+      toast(msg) {
+        layer.open({
+          content: msg,
+          skin: 'msg',
+          time: 2
+        });
+      },
+
+      // 将对象转换成URL查询字符串
+      queryString(obj) {
+        var queryStringArr = [];
+        for (let key in obj) {
+          queryStringArr.push(key + '=' + encodeURIComponent(obj[key]));
+        }
+        return (queryStringArr.length > 0) ? queryStringArr.join('&') : '';
+      }
+
+    }
+  })
+</script>
+
+</body>
+</html>
