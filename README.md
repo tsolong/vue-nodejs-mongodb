@@ -20,16 +20,7 @@
 
 ## 2. 项目运行
 
-### 2.1 前端H5静态文件服务器启动 (再启动前端服务)
-```
-cd h5
-npm install
-npm run dev
-```
-访问地址如下：  
-http://127.0.0.1:8001  
-
-### 2.2 后端nodejs接口服务器启动 (先启动后端服务)
+### 2.1 后端nodejs接口服务器启动 (先启动后端服务)
 ```
 cd server
 npm install
@@ -40,3 +31,12 @@ npm run dev
 新增用户：http://127.0.0.1:8002/addUser  
 编辑用户：http://127.0.0.1:8002/editUser  
 删除用户：http://127.0.0.1:8002/deleteUser  
+
+### 2.2 前端H5静态文件服务器启动 (再启动前端服务)
+```
+cd h5
+npm install
+npm run dev
+```
+访问地址如下：  
+http://127.0.0.1:8001  
